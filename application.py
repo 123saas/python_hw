@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
+
 class Application:
 
     def __init__(self):
@@ -15,7 +16,7 @@ class Application:
     def login(self, username, password):
         # login
         wd = self.wd
-        self.open_home_page()
+        self.open_home_page() # пытаемся открыть главную страницу, но метод open_home_page() остался в фикстуре, поэтому обращаемся так: self.app.open_home_page()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
         wd.find_element_by_name("pass").click()
@@ -134,3 +135,9 @@ class Application:
 
     def destroy(self):
         self.wd.quit()
+
+    def return_to_home(self):
+        wd = self.wd
+        # return to home
+        wd.find_element_by_link_text("home").click()
+
