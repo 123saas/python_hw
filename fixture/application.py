@@ -1,28 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-
+from fixture.session import SessionHelper
 
 class Application:
 
     def __init__(self):
         self.wd = webdriver.Firefox(executable_path='C:\Windows\SysWOW64\geckodriver.exe')  # запуск драйвера
         self.wd.implicitly_wait(30)
+        self.session = SessionHelper(self) # вот так помощник (SessionHelper) получается ссылку на объект класса Application. Это даст возможность в одном помощнике обратиться к какому-то другому помощнику через объект класса Application
 
     def open_home_page(self):
         # открытие главной страницы
         wd = self.wd
         wd.get("http://localhost/addressbook/")
-
-    def login(self, username, password):
-        # login
-        wd = self.wd
-        self.open_home_page() # пытаемся открыть главную страницу, но метод open_home_page() остался в фикстуре, поэтому обращаемся так: self.app.open_home_page()
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys(username)
-        wd.find_element_by_name("pass").click()
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys(password)
-        wd.find_element_by_xpath("//input[@value='Login']").click()
 
     def open_groups_page(self):
         # открытие страницы группы
@@ -128,11 +118,6 @@ class Application:
         wd = self.wd
         wd.find_element_by_link_text("group page").click()
 
-    def logout(self):
-        # выход
-        wd = self.wd
-        wd.find_element_by_link_text("Logout").click()
-
     def destroy(self):
         self.wd.quit()
 
@@ -140,4 +125,3 @@ class Application:
         wd = self.wd
         # return to home
         wd.find_element_by_link_text("home").click()
-
