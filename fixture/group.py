@@ -28,8 +28,31 @@ class GroupHelper:
         wd.find_element_by_name("submit").click()
         self.return_to_groups_page()
 
+    def test_delete_first_group(self):
+        # Надо отправиться на страницу со списком групп
+        wd = self.app.wd
+        self.open_groups_page()
+        # Надо выбрать первую группу
+        wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
+        # Потом удалить
+        wd.find_element_by_name("delete").click()  # найти элемент по имени delete и кликнуть
+        self.return_to_groups_page()
+        # wd.switch_to.alert.accept()
+
     def return_to_groups_page(self):
         # возврат на страницу со списком групп
         wd = self.app.wd
         wd.find_element_by_link_text("group page").click()
 
+    def modification_first_group(self):
+        # Надо отправиться на страницу со списком контактов
+        wd = self.app.wd
+        self.open_groups_page()
+        # Надо выбрать первый контакт
+        wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
+        wd.find_element_by_name("edit").click()  # найти элемент по имени edit и кликнуть
+        # Потом изменить
+        wd.find_element_by_name("group_name").click()
+        wd.find_element_by_name("group_name").clear()
+        wd.find_element_by_name("group_name").send_keys("modification_group_name")
+        wd.find_element_by_name("update").click()

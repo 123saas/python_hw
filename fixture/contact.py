@@ -84,3 +84,26 @@ class ContactHelper:
         wd = self.app.wd
         # return to home
         wd.find_element_by_link_text("home").click()
+
+    def modification_first_contact(self):
+        # Надо отправиться на страницу со списком контактов
+        wd = self.app.wd
+        self.return_to_home()
+        # Надо выбрать первый контакт
+        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[3]/td[8]/a/img").click() # найти элемент "карандаш" и кликнуть по нему
+        # Потом изменить
+        wd.find_element_by_name("firstname").click()
+        wd.find_element_by_name("firstname").clear()
+        wd.find_element_by_name("firstname").send_keys("Nick_test")
+        wd.find_element_by_name("update").click()
+
+    def test_delete_first_contact(self):
+        # Надо отправиться на страницу со списком контактов
+        wd = self.app.wd
+        self.return_to_home()
+        # Надо выбрать первый контакт
+        wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
+        # Потом удалить
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to.alert.accept()
+
