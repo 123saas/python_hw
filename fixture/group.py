@@ -45,10 +45,10 @@ class GroupHelper:
         wd.find_element_by_link_text("group page").click()
 
     def modification_first_group(self):
-        # Надо отправиться на страницу со списком контактов
+        # Надо отправиться на страницу со списком групп
         wd = self.app.wd
         self.open_groups_page()
-        # Надо выбрать первый контакт
+        # Надо выбрать первую группу
         wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
         wd.find_element_by_name("edit").click()  # найти элемент по имени edit и кликнуть
         # Потом изменить
