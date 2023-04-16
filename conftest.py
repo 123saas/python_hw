@@ -9,6 +9,11 @@ from fixture.application import Application
 @pytest.fixture (scope = "session")
 def app(request):
     fixture = Application()  # объект типа Application
+    fixture.session.login(username="admin", password="secret")
+    # определяем маленькую локальную функцию
+    def fin():
+        fixture.session.logout()
+        fixture.destroy()
     # указание на то, как эта фикстура должна быть разрушена
-    request.addfinalizer(fixture.destroy)  # у параметра request есть метод addfinalizer, а передать надо fixture.destroy
+    request.addfinalizer(fin)  # в качестве финализатора теперь будет добавлена самодельная функция fin, которая будет выполнять сразу 2 действия и logout и destroy
     return fixture  # возвращает фикстуру
