@@ -56,3 +56,12 @@ class GroupHelper:
         wd.find_element_by_name("group_name").clear()
         wd.find_element_by_name("group_name").send_keys("modification_group_name")
         wd.find_element_by_name("update").click()
+
+    def count(self):
+        wd = self.app.wd
+        self.open_groups_page()  # перейти на страницу со списком групп
+        # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
+        return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
+
+
+

@@ -94,7 +94,7 @@ class ContactHelper:
         wd = self.app.wd
         self.return_to_home()
         # Надо выбрать первый контакт
-        wd.find_element_by_xpath("//table[@id='maintable']/tbody/tr[3]/td[8]/a/img").click() # найти элемент "карандаш" и кликнуть по нему
+        wd.find_element_by_xpath("//img[@alt='Edit']").click() # найти элемент "карандаш" и кликнуть по нему
         # Потом изменить
         self.fill_contact_form(contact)
         # обновить
@@ -109,4 +109,10 @@ class ContactHelper:
         # Потом удалить
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to.alert.accept()
+
+    def count(self):
+        wd = self.app.wd
+        self.return_to_home()
+        # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
+        return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
 
