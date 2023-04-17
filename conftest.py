@@ -16,7 +16,7 @@ def app(request):
     # выполняем проверку
     if fixture is None:
         # нужно фикстуру проинициализировать
-        fixture = Application()  # объект типа Application
+        fixture = Application()
         # альтернативная ситуация. предположим, что фикстура уже создана и надо проверить не испортилась ли она, поэтому добавляем вторую проверку
     else:
         if not fixture.is_valid():

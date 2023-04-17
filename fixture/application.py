@@ -6,7 +6,7 @@ from fixture.contact import ContactHelper
 class Application:
 # конструктор, который инициализирует ссылку на драйвер, потом инициализирует помощников (SessionHelper,GroupHelper, ContactHelper)
     def __init__(self):
-        self.wd = webdriver.Firefox(executable_path='C:\Windows\SysWOW64\geckodriver.exe')  # запуск драйвера
+        self.wd = webdriver.Firefox(executable_path='C:\Windows\SysWOW64\geckodriver.exe')
         self.wd.implicitly_wait(30)
         self.session = SessionHelper(self) # вот так помощник (SessionHelper) получается ссылку на объект класса Application. Это даст возможность в одном помощнике обратиться к какому-то другому помощнику через объект класса Application
         self.group = GroupHelper(self)
