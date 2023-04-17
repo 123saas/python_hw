@@ -7,6 +7,9 @@ class GroupHelper:
     def open_groups_page(self):
         # открытие страницы группы
         wd = self.app.wd #доступ к драйверу теперь получается через ссылку на основной класс Application (именно там она хранится общая для всех) (поэтому дописывается app)
+        # мы можем проверить: "Если мы находимся на нужной странице, то ничего делать не надо если это верно, значит мы находимся на нужной странице и переход делать не надо
+        if wd.current_url.endswith("/group.php") and len(wd.find_elements_by_name("new")) > 0:  # поскольку другие разделы имеют такой же адрес, то надо добавить еще условие: количество элементов найденных по имени "new" больше 0 (len(wd.find_elements_by_name("new")) > 0)
+            return
         wd.find_element_by_link_text("groups").click()
 
     def create_group(self, group):
@@ -56,6 +59,7 @@ class GroupHelper:
         wd.find_element_by_name("group_name").clear()
         wd.find_element_by_name("group_name").send_keys("modification_group_name")
         wd.find_element_by_name("update").click()
+        self.return_to_groups_page()
 
     def count(self):
         wd = self.app.wd

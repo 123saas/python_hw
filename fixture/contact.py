@@ -86,6 +86,8 @@ class ContactHelper:
 
     def return_to_home(self):
         wd = self.app.wd
+        if wd.current_url.endswith("/addressbook/"):
+            return
         # return to home
         wd.find_element_by_link_text("home").click()
 
@@ -99,6 +101,7 @@ class ContactHelper:
         self.fill_contact_form(contact)
         # обновить
         wd.find_element_by_name("update").click()
+        self.return_to_home()
 
     def test_delete_first_contact(self):
         # Надо отправиться на страницу со списком контактов
