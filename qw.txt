@@ -1,0 +1,48 @@
+test_del_contact.py::test_delete_first_contact FAILED                    [100%]
+test_del_contact.py:4 (test_delete_first_contact)
+app = <fixture.application.Application object at 0x00000098DE2C19E8>
+
+    def test_delete_first_contact(app):
+        if app.contact.count() == 0:  # если нет ни одного контакта
+            app.contact.create_new_contact(Contact("first_name_del", "middle_name_del", "last_name_del", "nickname_test",  # нужно группу предварительно создать
+                        "title_test", "company_test", "address_test", "home_test", "123456789", "work_test",
+                        "fax_test", "e-mail_test", "e-mail_test2", "email_test3", "homepage_test", "18",
+                        "June", "1800", "15", "September", "1900", "address_test_secondary",
+                        "home_test_secondary", "notes_test_secondary"))
+
+        old_contacts = app.contact.get_contact_list()
+        # вспомогательные методы
+>       app.contact.test_delete_first_contact()
+
+test_del_contact.py:15:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\fixture\contact.py:124: in test_delete_first_contact
+    WebDriverWait(wd, 5).until(ec.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <selenium.webdriver.support.wait.WebDriverWait (session="9641b3a4-3862-4408-8f99-b925522a118d")>
+method = <selenium.webdriver.support.expected_conditions.presence_of_element_located object at 0x00000098DE314E48>
+message = ''
+
+    def until(self, method, message=''):
+        """Calls the method provided with the driver as an argument until the \
+        return value is not False."""
+        screen = None
+        stacktrace = None
+
+        end_time = time.time() + self._timeout
+        while True:
+            try:
+                value = method(self._driver)
+                if value:
+                    return value
+            except self._ignored_exceptions as exc:
+                screen = getattr(exc, 'screen', None)
+                stacktrace = getattr(exc, 'stacktrace', None)
+            time.sleep(self._poll)
+            if time.time() > end_time:
+                break
+>       raise TimeoutException(message, screen, stacktrace)
+E       selenium.common.exceptions.TimeoutException: Message:
+
+..\env\lib\site-packages\selenium\webdriver\support\wait.py:80: TimeoutException
