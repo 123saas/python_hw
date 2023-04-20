@@ -1,3 +1,7 @@
+from model.group import Group
+
+
+
 # переносим сюда все вспомогательные методы, которые относятся к работе с группами
 class GroupHelper:
     # делаем конструктор, в который будет передаваться ссылка на Application (главный класс фикстуры)
@@ -47,7 +51,7 @@ class GroupHelper:
         wd = self.app.wd
         wd.find_element_by_link_text("group page").click()
 
-    def modification_first_group(self):
+    def modification_first_group(self, group):
         # Надо отправиться на страницу со списком групп
         wd = self.app.wd
         self.open_groups_page()
@@ -57,7 +61,7 @@ class GroupHelper:
         # Потом изменить
         wd.find_element_by_name("group_name").click()
         wd.find_element_by_name("group_name").clear()
-        wd.find_element_by_name("group_name").send_keys("modification_group_name")
+        wd.find_element_by_name("group_name").send_keys(group.name)
         wd.find_element_by_name("update").click()
         self.return_to_groups_page()
 
@@ -66,6 +70,23 @@ class GroupHelper:
         self.open_groups_page()  # перейти на страницу со списком групп
         # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
         return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
+
+    def get_group_list(self):
+        wd = self.app.wd  # получаем вебдрайвер
+        self.open_groups_page()  # отсюда будем читать информацию
+        groups = []
+        for element in (wd.find_elements_by_css_selector("span.group")):  # находим все элементы by_css_selector и указываем, что мы ищем: span, который имеет класс group (wd.find_elements_by_css_selector("span.group")) и теперь нам нужно по этим элементам устроить цикл
+            text = element.text  # можем получить текст
+            # нам надо получить идентификатор
+            id = element.find_element_by_name("selected[]").get_attribute("value")  # для этого мы внутри этого элемента span находим другой элемент, который имеет имя selected[] ( то есть чекбокс находящийся внутри элемента span) и у этого чекбокса получаем значение атрибута "value" (get_attribute("value"))
+            # по этим двум свойствам мы должны построить объект типа Group и добавить его в какой-то список (groups), который будет в конце возвращаться
+            groups.append(Group(name=text, id=id))  # добавляем новую группу. И в качестве параметров при конструировании нового объекта указываем name = text, id=id
+        return groups
+
+
+
+
+
 
 
 

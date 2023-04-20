@@ -1,4 +1,12 @@
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+
+
+
+from model.contact import Contact
 
 
 class ContactHelper:
@@ -112,10 +120,27 @@ class ContactHelper:
         # Потом удалить
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to.alert.accept()
+        self.return_to_home()
+        WebDriverWait(wd, 5).until(ec.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
+
 
     def count(self):
         wd = self.app.wd
         self.return_to_home()
         # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
         return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
+
+    def get_contact_list(self):
+        wd = self.app.wd  # получаем вебдрайвер
+        self.return_to_home()  # отсюда будем читать информацию
+        contacts = []
+        for element in (wd.find_elements_by_css_selector("[name=entry]")):
+            lastname = wd.find_element_by_xpath("//td[2]").text  # можем получить текст
+            firstname = wd.find_element_by_xpath("//td[3]").text
+            # нам надо получить идентификатор
+            id = element.find_element_by_name("selected[]").get_attribute("id")
+            contacts.append(Contact(lastname=lastname, firstname=firstname, id=id))
+        return contacts
+
+
 

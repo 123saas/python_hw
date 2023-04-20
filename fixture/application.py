@@ -3,6 +3,7 @@ from fixture.session import SessionHelper
 from fixture.group import GroupHelper
 from fixture.contact import ContactHelper
 
+
 class Application:
 # конструктор, который инициализирует ссылку на драйвер, потом инициализирует помощников (SessionHelper,GroupHelper, ContactHelper)
     def __init__(self):
