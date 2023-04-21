@@ -20,6 +20,7 @@ class ContactHelper:
         self.fill_contact_form(contact)
         wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
         self.return_to_home()
+        self.contact_cache = None
 
     def fill_contact_form(self, contact):
         wd = self.app.wd
@@ -110,6 +111,7 @@ class ContactHelper:
         # обновить
         wd.find_element_by_name("update").click()
         self.return_to_home()
+        self.contact_cache = None
 
     def test_delete_first_contact(self):
         # Надо отправиться на страницу со списком контактов
@@ -122,6 +124,7 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.return_to_home()
         WebDriverWait(wd, 5).until(ec.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
+        self.contact_cache = None
 
 
     def count(self):
@@ -130,17 +133,20 @@ class ContactHelper:
         # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
         return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
 
+    contact_cache = None  # создаем переменную
+
     def get_contact_list(self):
-        wd = self.app.wd  # получаем вебдрайвер
-        self.return_to_home()  # отсюда будем читать информацию
-        contacts = []
-        for element in (wd.find_elements_by_css_selector("[name=entry]")):
-            lastname = wd.find_element_by_xpath("//td[2]").text  # можем получить текст
-            firstname = wd.find_element_by_xpath("//td[3]").text
-            # нам надо получить идентификатор
-            id = element.find_element_by_name("selected[]").get_attribute("id")
-            contacts.append(Contact(lastname=lastname, firstname=firstname, id=id))
-        return contacts
+        if self.contact_cache is None:
+            wd = self.app.wd  # получаем вебдрайвер
+            self.return_to_home()  # отсюда будем читать информацию
+            self.contact_cache = []
+            for element in (wd.find_elements_by_css_selector("[name=entry]")):
+                lastname = wd.find_element_by_xpath("//td[2]").text  # можем получить текст
+                firstname = wd.find_element_by_xpath("//td[3]").text
+                # нам надо получить идентификатор
+                id = element.find_element_by_name("selected[]").get_attribute("id")
+                self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id))
+        return list(self.contact_cache)
 
 
 

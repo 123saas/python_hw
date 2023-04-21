@@ -34,6 +34,8 @@ class GroupHelper:
         # подтверждение
         wd.find_element_by_name("submit").click()
         self.return_to_groups_page()
+        # после успешного выполнения метода create мы должны кеш сбросить:
+        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
     def test_delete_first_group(self):
         # Надо отправиться на страницу со списком групп
@@ -45,6 +47,8 @@ class GroupHelper:
         wd.find_element_by_name("delete").click()  # найти элемент по имени delete и кликнуть
         self.return_to_groups_page()
         # wd.switch_to.alert.accept()
+        # после успешного выполнения метода delete мы должны кеш сбросить:
+        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
     def return_to_groups_page(self):
         # возврат на страницу со списком групп
@@ -64,6 +68,8 @@ class GroupHelper:
         wd.find_element_by_name("group_name").send_keys(group.name)
         wd.find_element_by_name("update").click()
         self.return_to_groups_page()
+        # после успешного выполнения метода modification мы должны кеш сбросить:
+        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
     def count(self):
         wd = self.app.wd
@@ -71,17 +77,22 @@ class GroupHelper:
         # нам надо посчитать сколько чекбоксов присутствует на странице, то есть поискать все элементы, которые имеют имя "selected[]", взять длину (len) получившегося списка и вернуть ее (return)
         return len(wd.find_elements_by_name("selected[]"))  # количество групп, которые присутствуют в нашей адресной книге
 
+    group_cache = None  # создаем переменную
+
     def get_group_list(self):
-        wd = self.app.wd  # получаем вебдрайвер
-        self.open_groups_page()  # отсюда будем читать информацию
-        groups = []
-        for element in (wd.find_elements_by_css_selector("span.group")):  # находим все элементы by_css_selector и указываем, что мы ищем: span, который имеет класс group (wd.find_elements_by_css_selector("span.group")) и теперь нам нужно по этим элементам устроить цикл
-            text = element.text  # можем получить текст
-            # нам надо получить идентификатор
-            id = element.find_element_by_name("selected[]").get_attribute("value")  # для этого мы внутри этого элемента span находим другой элемент, который имеет имя selected[] ( то есть чекбокс находящийся внутри элемента span) и у этого чекбокса получаем значение атрибута "value" (get_attribute("value"))
-            # по этим двум свойствам мы должны построить объект типа Group и добавить его в какой-то список (groups), который будет в конце возвращаться
-            groups.append(Group(name=text, id=id))  # добавляем новую группу. И в качестве параметров при конструировании нового объекта указываем name = text, id=id
-        return groups
+        # делаем проверку: если self.group_cache is None, то есть кеш пустой
+        if self.group_cache is None:
+            # тогда нужно загрузить информацию из браузера, то есть нужно выполнить следующие действия
+            wd = self.app.wd  # получаем вебдрайвер
+            self.open_groups_page()  # отсюда будем читать информацию
+            self.group_cache = []
+            for element in (wd.find_elements_by_css_selector("span.group")):  # находим все элементы by_css_selector и указываем, что мы ищем: span, который имеет класс group (wd.find_elements_by_css_selector("span.group")) и теперь нам нужно по этим элементам устроить цикл
+                text = element.text  # можем получить текст
+                # нам надо получить идентификатор
+                id = element.find_element_by_name("selected[]").get_attribute("value")  # для этого мы внутри этого элемента span находим другой элемент, который имеет имя selected[] ( то есть чекбокс находящийся внутри элемента span) и у этого чекбокса получаем значение атрибута "value" (get_attribute("value"))
+                # по этим двум свойствам мы должны построить объект типа Group и добавить его в какой-то список (groups), который будет в конце возвращаться
+                self.group_cache.append(Group(name=text, id=id))  # добавляем новую группу. И в качестве параметров при конструировании нового объекта указываем name = text, id=id
+        return list(self.group_cache)
 
 
 
