@@ -11,3 +11,5 @@ def test_delete_first_group(app):
     new_groups = app.group.get_group_list()
     # надо сделать простую проверку: Убедимся, что новый список на единицу длиннее, чем старый. Проверки в тестах делаются с помощью ключевого слова assert
     assert len(old_groups) - 1 == len(new_groups)  # мы должны написать выражение, от которого требуется, чтобы оно было истинным: длина старого списка групп (len(old_groups)) + 1 = длине нового списка групп (len(new_groups))
+    old_groups[0:1] = []
+    assert old_groups == new_groups
