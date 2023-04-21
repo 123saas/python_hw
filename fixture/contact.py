@@ -100,18 +100,8 @@ class ContactHelper:
         # return to home
         wd.find_element_by_link_text("home").click()
 
-    def modification_first_contact(self, contact):
-        # Надо отправиться на страницу со списком контактов
-        wd = self.app.wd
-        self.return_to_home()
-        # Надо выбрать первый контакт
-        wd.find_element_by_xpath("//img[@alt='Edit']").click() # найти элемент "карандаш" и кликнуть по нему
-        # Потом изменить
-        self.fill_contact_form(contact)
-        # обновить
-        wd.find_element_by_name("update").click()
-        self.return_to_home()
-        self.contact_cache = None
+    def modification_first_contact(self):
+        self.modification_contact_by_index(0)
 
     def test_delete_first_contact(self):
         # Надо отправиться на страницу со списком контактов
@@ -148,5 +138,16 @@ class ContactHelper:
                 self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id))
         return list(self.contact_cache)
 
-
+    def modification_contact_by_index(self, index, contact):
+        # Надо отправиться на страницу со списком контактов
+        wd = self.app.wd
+        self.return_to_home()
+        # Надо выбрать первый контакт
+        wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click() # найти элемент "карандаш" и кликнуть по нему
+        # Потом изменить
+        self.fill_contact_form(contact)
+        # обновить
+        wd.find_element_by_name("update").click()
+        self.return_to_home()
+        self.contact_cache = None
 

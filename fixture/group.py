@@ -38,38 +38,19 @@ class GroupHelper:
         self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
     def test_delete_first_group(self):
-        # Надо отправиться на страницу со списком групп
-        wd = self.app.wd
-        self.open_groups_page()
-        # Надо выбрать первую группу
-        wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
-        # Потом удалить
-        wd.find_element_by_name("delete").click()  # найти элемент по имени delete и кликнуть
-        self.return_to_groups_page()
-        # wd.switch_to.alert.accept()
-        # после успешного выполнения метода delete мы должны кеш сбросить:
-        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
+        self.test_delete_group_by_index(0)
 
     def return_to_groups_page(self):
         # возврат на страницу со списком групп
         wd = self.app.wd
         wd.find_element_by_link_text("group page").click()
 
-    def modification_first_group(self, group):
-        # Надо отправиться на страницу со списком групп
+    def modification_first_group(self):
+        self.modification_group_by_index(0)
+
+    def select_first_group(self):
         wd = self.app.wd
-        self.open_groups_page()
-        # Надо выбрать первую группу
         wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
-        wd.find_element_by_name("edit").click()  # найти элемент по имени edit и кликнуть
-        # Потом изменить
-        wd.find_element_by_name("group_name").click()
-        wd.find_element_by_name("group_name").clear()
-        wd.find_element_by_name("group_name").send_keys(group.name)
-        wd.find_element_by_name("update").click()
-        self.return_to_groups_page()
-        # после успешного выполнения метода modification мы должны кеш сбросить:
-        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
     def count(self):
         wd = self.app.wd
@@ -95,9 +76,39 @@ class GroupHelper:
         return list(self.group_cache)
 
 
+    def select_group_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name("selected[]")[index].click()  # мы будем получать все чекбоксы, среди эти чекбоксов выбираем нужный по индексу (порядковому номеру) ([index]) и выполняем клик
 
 
+    def test_delete_group_by_index(self, index):
+        # Надо отправиться на страницу со списком групп
+        wd = self.app.wd
+        self.open_groups_page()
+        # Надо выбрать первую группу
+        self.select_group_by_index(index)
+        # Потом удалить
+        wd.find_element_by_name("delete").click()  # найти элемент по имени delete и кликнуть
+        self.return_to_groups_page()
+        # wd.switch_to.alert.accept()
+        # после успешного выполнения метода delete мы должны кеш сбросить:
+        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
 
+    def modification_group_by_index(self, index, group):
+        # Надо отправиться на страницу со списком групп
+        wd = self.app.wd
+        self.open_groups_page()
+        # Надо выбрать первую группу
+        self.select_group_by_index(index)
+        wd.find_element_by_name("edit").click()  # найти элемент по имени edit и кликнуть
+        # Потом изменить
+        wd.find_element_by_name("group_name").click()
+        wd.find_element_by_name("group_name").clear()
+        wd.find_element_by_name("group_name").send_keys(group.name)
+        wd.find_element_by_name("update").click()
+        self.return_to_groups_page()
+        # после успешного выполнения метода modification мы должны кеш сбросить:
+        self.group_cache = None  # кеш стал невалидным и при следующем обращении к методу get_group_list() он будет построен заново
 
 
