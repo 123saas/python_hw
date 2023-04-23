@@ -4,7 +4,7 @@ from model.contact import Contact
 
 def test_create_contact(app):
     old_contacts = app.contact.get_contact_list()
-    contact = Contact("1first_name_test2", "1middle_name_test", "last_name_test2", "nickname_test",
+    contact = Contact("3first_name_test234", "13middle_name_test34", "3last_name_test234", "nickname_test",
                       "title_test", "company_test", "address_test", "home_test", "123456789", "work_test",
                       "fax_test", "e-mail_test", "e-mail_test2", "email_test3", "homepage_test", "18",
                       "June", "1800", "15", "September", "1900", "address_test_secondary",
@@ -18,7 +18,7 @@ def test_create_contact(app):
 
 def test_create_empty_contact(app):
     old_contacts = app.contact.get_contact_list()
-    contact = Contact(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "-", "-", " ", "-",
+    contact = Contact("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "-", "-", " ", "-",
                       "-", " ", " ", " ", " ")
     app.contact.create_new_contact(contact)
     new_contacts = app.contact.get_contact_list()

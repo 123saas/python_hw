@@ -35,16 +35,8 @@ class Contact:
         return "%s:%s" % (self.id, self.firstname)
 
     def __eq__(self, other):
-        return (self.id is None or other.id is None or self.id == other.id or self.id == other.id) \
-               and (self.firstname == other.firstname and self.lastname == other.lastname is None or
-                    self.middlename is None or other.middlename is None or self.nickname is None or other.nickname
-                    is None or self.title is None or other.title is None or self.company is None or other.company is None or self.address is None or other.address
-                    is None or self.home_phone is None or other.home_phone is None or self.mobile_phone is None or other.mobile_phone
-                    is None or self.work_phone is None or other.work_phone is None or self.fax is None or other.fax
-                    is None or self.email is None or other.email is None or self.email2 is None or other.email2 is None or self.email3 is None or other.email3
-                    is None or self.homepage is None or other.homepage is None or self.bday is None or other.bday is None or self.bmonth is None or other.bmonth
-                    is None or self.byear is None or other.byear is None or self.address2 is None or other.address2
-                    is None or self.home_phone2 is None or other.home_phone2 is None or self.notes is None or other.notes)
+        return (self.id is None or other.id is None or self.id == other.id) and self.firstname == other.firstname and \
+               self.lastname == other.lastname
 
     def id_or_max(self):
         if self.id:

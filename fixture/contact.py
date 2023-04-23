@@ -131,8 +131,8 @@ class ContactHelper:
             self.return_to_home()  # отсюда будем читать информацию
             self.contact_cache = []
             for element in (wd.find_elements_by_css_selector("[name=entry]")):
-                lastname = wd.find_element_by_xpath("//td[2]").text  # можем получить текст
-                firstname = wd.find_element_by_xpath("//td[3]").text
+                lastname = element.find_element_by_xpath("./td[2]").text  # можем получить текст
+                firstname = element.find_element_by_xpath("./td[3]").text
                 # нам надо получить идентификатор
                 id = element.find_element_by_name("selected[]").get_attribute("id")
                 self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id))
