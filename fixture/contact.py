@@ -108,7 +108,7 @@ class ContactHelper:
         wd = self.app.wd
         self.return_to_home()
         # Надо выбрать первый контакт
-        wd.find_element_by_name("selected[]").click()  # найти элемент по имени selected[] и кликнуть по нему
+        self.select_contact_by_index()
         # Потом удалить
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to.alert.accept()
@@ -150,4 +150,21 @@ class ContactHelper:
         wd.find_element_by_name("update").click()
         self.return_to_home()
         self.contact_cache = None
+
+    def test_delete_contact_by_index(self, index):
+        # Надо отправиться на страницу со списком контактов
+        wd = self.app.wd
+        self.return_to_home()
+        # Надо выбрать первый контакт
+        self.select_contact_by_index(index)
+        # Потом удалить
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to.alert.accept()
+        self.return_to_home()
+        WebDriverWait(wd, 5).until(ec.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
+        self.contact_cache = None
+
+    def select_contact_by_index(self, index):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]")[index].click()  # найти элемент по имени selected[] и кликнуть по нему
 
