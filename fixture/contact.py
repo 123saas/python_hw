@@ -125,17 +125,20 @@ class ContactHelper:
 
     contact_cache = None  # создаем переменную
 
-    def get_contact_list(self):
+    def get_contact_list(self): # метод для загрузки списка, которыц читает таблицу на главной странице приложения и загружает оттуда информацию пока только имя и фамилию контакта
         if self.contact_cache is None:
             wd = self.app.wd  # получаем вебдрайвер
             self.return_to_home()  # отсюда будем читать информацию
             self.contact_cache = []
-            for element in (wd.find_elements_by_css_selector("[name=entry]")):
-                lastname = element.find_element_by_xpath("./td[2]").text  # можем получить текст
-                firstname = element.find_element_by_xpath("./td[3]").text
+            for row in wd.find_elements_by_name("entry"):
+                cells = row.find_elements_by_tag_name("td")
+                lastname = cells[1].text  # можем получить текст
+                firstname = cells[2].text
                 # нам надо получить идентификатор
-                id = element.find_element_by_name("selected[]").get_attribute("id")
-                self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id))
+                id = cells[0].find_element_by_name("selected[]").get_attribute("value")
+                all_phones = cells[5].text.splitlines() # в 5 столбце addressbook расположены номера телефонов и их надо поделить на кусочки с помощью метода splitlines(). разделены они будут переводом строки
+                self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id, home_phone=all_phones[0],
+                                                  mobile_phone=all_phones[1], work_phone=all_phones[2], home_phone2=all_phones[3]))
         return list(self.contact_cache)
 
     def modification_contact_by_index(self, index, contact):
@@ -168,3 +171,25 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_name("selected[]")[index].click()  # найти элемент по имени selected[] и кликнуть по нему
 
+    def open_contact_to_edit_by_index(self, index):
+        wd = self.app.wd
+        self.return_to_home()
+        wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
+
+    def open_contact_view_by_index(self, index):
+        wd = self.app.wd
+        self.return_to_home()
+        wd.find_elements_by_xpath("//img[@alt='Details']")[index].click()
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_index(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        home_phone = wd.find_element_by_name("home").get_attribute("value")
+        work_phone = wd.find_element_by_name("work").get_attribute("value")
+        mobile_phone = wd.find_element_by_name("mobile").get_attribute("value")
+        home_phone2 = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, home_phone=home_phone,
+                       work_phone=work_phone, mobile_phone=mobile_phone, home_phone2=home_phone2)
