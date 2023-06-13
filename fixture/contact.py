@@ -136,9 +136,13 @@ class ContactHelper:
                 firstname = cells[2].text
                 # нам надо получить идентификатор
                 id = cells[0].find_element_by_name("selected[]").get_attribute("value")
-                all_phones = cells[5].text.splitlines() # в 5 столбце addressbook расположены номера телефонов и их надо поделить на кусочки с помощью метода splitlines(). разделены они будут переводом строки
-                self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id, home_phone=all_phones[0],
-                                                  mobile_phone=all_phones[1], work_phone=all_phones[2], home_phone2=all_phones[3]))
+                address = cells[3].text
+                all_phones = cells[5].text # в 5 столбце addressbook расположены номера телефонов и нарезать его не будем, а оставим в виде текста. куда в свойствах контакта пометить этот текст.
+                # сделаем специальное свойство all_phones_from_home_page = all_phones. и all_phones_from_home_page надо добавить в model/contact
+                all_emails = cells[4].text
+                self.contact_cache.append(Contact(lastname=lastname, firstname=firstname, id=id, address=address,
+                                                  all_phones_from_home_page=all_phones,
+                                                  all_emails_from_home_page=all_emails))
         return list(self.contact_cache)
 
     def modification_contact_by_index(self, index, contact):
@@ -187,9 +191,14 @@ class ContactHelper:
         firstname = wd.find_element_by_name("firstname").get_attribute("value")
         lastname = wd.find_element_by_name("lastname").get_attribute("value")
         id = wd.find_element_by_name("id").get_attribute("value")
+        address = wd.find_element_by_name("address").get_attribute("value")
         home_phone = wd.find_element_by_name("home").get_attribute("value")
         work_phone = wd.find_element_by_name("work").get_attribute("value")
         mobile_phone = wd.find_element_by_name("mobile").get_attribute("value")
         home_phone2 = wd.find_element_by_name("phone2").get_attribute("value")
-        return Contact(firstname=firstname, lastname=lastname, id=id, home_phone=home_phone,
-                       work_phone=work_phone, mobile_phone=mobile_phone, home_phone2=home_phone2)
+        email = wd.find_element_by_name("email").get_attribute("value")
+        email2 = wd.find_element_by_name("email2").get_attribute("value")
+        email3 = wd.find_element_by_name("email3").get_attribute("value")
+        return Contact(firstname=firstname, lastname=lastname, id=id, address=address, home_phone=home_phone,
+                       work_phone=work_phone, mobile_phone=mobile_phone, home_phone2=home_phone2, email=email,
+                       email2=email2, email3=email3)
