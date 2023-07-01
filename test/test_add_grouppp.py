@@ -1,12 +1,51 @@
 # -*- coding: utf-8 -*-
 from model.group import Group
+import pytest
+import random # будем использовать функции, которые что-то случайным образом выбирает
+import string # содержит константы хранящие списки символов
 
+# Сделаем генерацию случайных тестовых данных. Для этого пишем вспомогательную функцию:
+def random_string(prefix, maxlen): # которой в качетсве параметра будем передавать префикс (prefix) и максимальную длину генерируемой строки (maxlen)
+    symbols = string.ascii_letters + string.digits + string.punctuation + " "*10 # это символы, которые собираемся использовать в случайно сгенерированной строке. *10 - это добавить 10 пробелов. string.punctuation - это разные символы, которые буквами и цифрами не являются
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))]) # случацным образом выбирает символ из заданной строки (symbols),
+    # делать это нам надо многократно [[random.choice(symbols) for i in range(random.randrange(maxlen))]]. Пояснение (random.randrange(maxlen)): будет сгенерирована
+    # случайная длина не превышающая максимальную. У нас есть набор случайных символов и их нужно превратить в строчку: "".join, склеиваем этот список,
+    # добавляем в начало префикс (prefix) и возвращаем получившийся результат (return)
 
+# хотелось бы, чтобы после падения на каком-то тестовом наборе выполнение продолжалось дальше на следующих
+# тестовых наборах и мы получали отчет, где видно на этом тестовом наборе успешно отработало, на этом упало и тд.
+# Для того, чтобы добиться такого эффекта, нужно отказаться от использования цикла внутри теста и перенести тестовые данные
+# на один уровень выше, так чтобы они передавались внутрь тестовой функции в качестве параметра.
+#
+# Делается это следующим образом:
+# 1. Сначала вытаскиваем тестовые данные из функции
+# Вариант 1
+# testdata = [
+#     Group(name=random_string("name", 10), header=random_string("header", 20), footer=random_string("footer", 20)), # будем генерировать случайную строку, которая начинается с префикса name
+#     # и потом содержит еще не более 10 случайных символов
+#     Group(name="", header="", footer="")
+# ]
+
+# Вариант 2. Если хотим сделать одну группу с пустыми данными и несколько не с пустыми (случайными). Тогда делаем следующее
+testdata = [Group(name="", header="", footer="")] + [
+    Group(name=random_string("name", 10), header=random_string("header", 20), footer=random_string("footer", 20)) # будет сгенерирован объект Group, содержащий случайные данные 5 раз и из этих сгенерированных объектов будет построен список
+    for i in range(5) # а еще к нему добавится маленький список, содержащий тестовый набор  с пустыми строками
+]
+
+# Вариант 3. Если хотим сделать генерацию комбинаций
+# testdata = [
+#     Group(name=name, header=header, footer=footer) # будет сгенерирован объект Group, содержащий случайные данные 5 раз и из этих сгенерированных объектов будет построен список
+#     for name in ["", random_string("name", 10)] # переменная name пробегает по двум возможным значениям "", random_string("name", 10). Для каждого имени мы перебираем разные значения header и footer
+#     for header in ["", random_string("header", 20)] # переменная header пробегает по двум возможным значениям "", random_string("name", 20)
+#     for footer in ["", random_string("footer", 20)] # переменная footer пробегает по двум возможным значениям "", random_string("name", 20)
+# ]
+
+@pytest.mark.parametrize("group", testdata, ids=[repr(x) for x in testdata])
 # тестовый метод
-def test_add_group(app):
+def test_add_group(app, group): # тестовые данные будут передаваться в качестве параметра (group)
     # перед созданием группы нам нужно сначала сохранить старый список групп (old_groups)
     old_groups = app.group.get_group_list()  # загружать список будем с помощью вспомогательной функции, которую поместим в помощник по работе с группами - app.group.get_group_list()
-    group = Group(name="test_group_name", header="test_group_header", footer="test_group_footer")
+    # group = Group(name="test_group_name", header="test_group_header", footer="test_group_footer")
     # вспомогательные методы
     app.group.create_group(group)
     # после того, как действие выполнено, надо получить новый список
@@ -22,16 +61,16 @@ def test_add_group(app):
 # этого списка из браузера уменьшится с 200 до 101
 # в методе get_group_list мы будем возвращать кешированное значение, если оно доступно
 
-def test_add_empty_group(app):
-    # перед созданием группы нам нужно сначала сохранить старый список групп (old_groups)
-    old_groups = app.group.get_group_list()  # загружать список будем с помощью вспомогательной функции, которую поместим в помощник по работе с группами - app.group.get_group_list()
-    group = Group(name="", header="", footer="")
-    # вспомогательные методы
-    app.group.create_group(group)
-    # после того, как действие выполнено, надо получить новый список
-    new_groups = app.group.get_group_list()
-    # надо сделать простую проверку: Убедимся, что новый список на единицу длиннее, чем старый. Проверки в тестах делаются с помощью ключевого слова assert
-    assert len(old_groups) + 1 == len(new_groups) # мы должны написать выражение, от которого требуется, чтобы оно было истинным: длина старого списка групп (len(old_groups)) + 1 = длине нового списка групп (len(new_groups))
-    old_groups.append(group)
-    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
-
+# def test_add_empty_group(app):
+#     # перед созданием группы нам нужно сначала сохранить старый список групп (old_groups)
+#     old_groups = app.group.get_group_list()  # загружать список будем с помощью вспомогательной функции, которую поместим в помощник по работе с группами - app.group.get_group_list()
+#     group = Group(name="", header="", footer="")
+#     # вспомогательные методы
+#     app.group.create_group(group)
+#     # после того, как действие выполнено, надо получить новый список
+#     new_groups = app.group.get_group_list()
+#     # надо сделать простую проверку: Убедимся, что новый список на единицу длиннее, чем старый. Проверки в тестах делаются с помощью ключевого слова assert
+#     assert len(old_groups) + 1 == len(new_groups) # мы должны написать выражение, от которого требуется, чтобы оно было истинным: длина старого списка групп (len(old_groups)) + 1 = длине нового списка групп (len(new_groups))
+#     old_groups.append(group)
+#     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
+#
