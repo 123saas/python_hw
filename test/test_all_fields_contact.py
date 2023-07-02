@@ -20,7 +20,7 @@ def merge_phones_like_on_home_page(contact):
                                        [contact.home_phone, contact.mobile_phone, contact.work_phone, contact.home_phone2]))))
 
 def clear_emails(s):
-    return re.sub("[()]", "", s)
+    return re.sub(" ", "", s)
 
 
 def merge_emails_like_on_home_page(contact):
