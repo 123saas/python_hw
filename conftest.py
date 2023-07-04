@@ -1,9 +1,10 @@
 import pytest
 from fixture.application import Application
-
+import json
+import os.path
 
 fixture = None  # глобальная переменная (fixture) пока не будет определена (None)
-
+target = None
 
 # инициализация фикстуры
 
@@ -13,17 +14,18 @@ fixture = None  # глобальная переменная (fixture) пока �
 @pytest.fixture
 def app(request):
     global fixture  # объявляем, что мы собираемся пользоваться этой глобальной переменной
+    global target
     browser = request.config.getoption("--browser")
-    base_url = request.config.getoption("--baseUrl")
+    if target is None:
+        config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), request.config.getoption("--target"))
+        with open(config_file) as f:
+            target = json.load(f)
     # выполняем проверку
-    if fixture is None:
+    if fixture is None or not fixture.is_valid():
         # нужно фикстуру проинициализировать
-        fixture = Application(browser=browser, base_url=base_url)  # объект типа Application
+        fixture = Application(browser=browser, base_url=target['baseUrl'])  # объект типа Application
         # альтернативная ситуация. предположим, что фикстура уже создана и надо проверить не испортилась ли она, поэтому добавляем вторую проверку
-    else:
-        if not fixture.is_valid():
-            fixture = Application(browser=browser, base_url=base_url)  # объект типа Application
-    fixture.session.ensure_login(username="admin", password="secret") # строчку нужно выполнять не только после того, как браузер запущен, а выносят сюда, чтобы она выполнялась при каждом обращении к функции (def app(request)) инициализирующей фикстуру ->
+    fixture.session.ensure_login(username=target['username'], password=target['password']) # строчку нужно выполнять не только после того, как браузер запущен, а выносят сюда, чтобы она выполнялась при каждом обращении к функции (def app(request)) инициализирующей фикстуру ->
     # -> точно так же как и с logout нам не надо выполнять login, нам надо выполнять его интеллектуально, поэтому сделаем вспомогательный метод ensure_login, который будет выполнять проверку "Нужно выполнять login или не нужно?". Eсли мы уже залогинились как правильные пользователи, то делать ничего не надо
     return fixture
 
@@ -40,4 +42,4 @@ def stop(request):
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="firefox")
-    parser.addoption("--baseUrl", action="store", default="http://localhost/addressbook/")
+    parser.addoption("--target", action="store", default="target.json")
