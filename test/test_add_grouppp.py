@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from model.group import Group
-import pytest
-from data.add_group import constant as testdata
 
-@pytest.mark.parametrize("group", testdata, ids=[repr(x) for x in testdata])
+
+# будем использовать фикстуру, указывающую на источник данных, то есть имя фикстуры будет подсказывать откуда нужно будет загружать тестовые данные
 # тестовый метод
-def test_add_group(app, group): # тестовые данные будут передаваться в качестве параметра (group)
+def test_add_group(app, json_groups): # реализуем еще одну разновидность фикстур, которая будет связывать тестовые функции с данными хранящимися в файлах в формате json. для этого мы будем использовать фикстуру с префиксом json. и как только встречается такая фикстура - это означает что должен быть загружен файл находящийся в подкатологе data и имеющее такое название: groups, то есть в данном случае это будет файл data/groups.json
+    group = json_groups # это пишем для того чтобы дальше работать с переменной group
     # перед созданием группы нам нужно сначала сохранить старый список групп (old_groups)
     old_groups = app.group.get_group_list()  # загружать список будем с помощью вспомогательной функции, которую поместим в помощник по работе с группами - app.group.get_group_list()
     # group = Group(name="test_group_name", header="test_group_header", footer="test_group_footer")

@@ -2,7 +2,7 @@ from model.group import Group
 import random # будем использовать функции, которые что-то случайным образом выбирает
 import string # содержит константы хранящие списки символов
 import os.path
-import json
+import jsonpickle
 
 # Сделаем генерацию случайных тестовых данных. Для этого пишем вспомогательную функцию:
 def random_string(prefix, maxlen): # которой в качетсве параметра будем передавать префикс (prefix) и максимальную длину генерируемой строки (maxlen)
@@ -43,4 +43,5 @@ testdata = [Group(name="", header="", footer="")] + [
 file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data/groups.json")
 
 with open(file, "w") as f:
-    f.write(json.dumps(testdata, default=lambda x: x.__dict__, indent=2))
+    jsonpickle.set_encoder_options("json", indent=2)
+    f.write(jsonpickle.encode(testdata)) # что кодировать? testdata

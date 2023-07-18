@@ -1,10 +1,14 @@
 import pytest
 from fixture.application import Application
+import jsonpickle
 import json
 import os.path
+import importlib
 
 fixture = None  # глобальная переменная (fixture) пока не будет определена (None)
 target = None
+
+
 
 # инициализация фикстуры
 
@@ -40,6 +44,29 @@ def stop(request):
     request.addfinalizer(fin)  # в качестве финализатора теперь будет добавлена самодельная функция fin, которая будет выполнять сразу 2 действия и logout и destroy
     return fixture  # возвращает фикстуру
 
+# загрузить данные из модуля с заданным именем
+def load_from_module(module):
+    return importlib.import_module("data.%s" % module).testdata
+
+def load_from_json(file):
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/%s.json" % file)) as f:
+        jsonpickle.decode(f.read())
+
+
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="firefox")
     parser.addoption("--target", action="store", default="target.json")
+
+def pytest_generate_tests(metafunc): # добавляем специальную функцию, которая называется pytest_generate_tests и в качестве параметра в нее передается особый объект - metafunc (через этот объект можно получить практически полную информацию о тестовой функции)
+    # в частности, мы можем получить информацию о фикстурах, которые есть у этой тестовой функции (они же, параметры тестовой функции
+    for fixture in metafunc.fixturenames:
+        if fixture.startswith("data_"): # пробегаем по всем параметрам, но нас будут интересовать только те, которые начинаются с префикса data
+            testdata = load_from_module(fixture[5:]) # как только встретилась такая фикстура мы должны загрузить тестовые данные из модуля, который имеет такое же название, как и фикстура, но обрезанные. первые 5 символов нужно удалить fixture[5:]
+            metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata]) # используем загруженные тестовые данные для того, чтобы праметризовать нашу тестовую финкцию
+            # нужно добавить еще одно условие для фикстур, которые начинаются с префикса json
+        elif fixture.startswith("json_"):
+            # необходимо выполнять похожее действие, только загружать будем не из модуля, а из json файла
+            testdata = load_from_json(fixture[5:])  # как только встретилась такая фикстура мы должны загрузить тестовые данные из модуля, который имеет такое же название, как и фикстура, но обрезанные. первые 5 символов нужно удалить fixture[5:]
+            metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata])
+
+
