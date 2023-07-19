@@ -1,0 +1,108 @@
+test_add_contact.py::test_create_contact[None:;;]
+test_add_contact.py::test_create_contact[None:firstname,M{K[ Ws;lastname|;email] PASSED                 [ 16%]FAILED [ 33%]
+test_add_contact.py:5 (test_create_contact[None:firstname,M{K[ Ws;lastname|;email])
+7 != 6
+
+Expected :6
+Actual   :7
+<Click to see difference>
+
+app = <fixture.application.Application object at 0x0000000E3D5D92E8>
+json_contacts = None:firstname,M{K[ Ws;lastname|;email
+
+    def test_create_contact(app, json_contacts):
+        contact = json_contacts
+        old_contacts = app.contact.get_contact_list()
+        app.contact.create_new_contact(contact)
+        new_contacts = app.contact.get_contact_list()
+>       assert len(old_contacts) + 1 == len(new_contacts)
+E       assert 7 == 6
+
+test_add_contact.py:11: AssertionError
+FAILED [ 50%]
+test_add_contact.py:5 (test_create_contact[None:firstnameXaOun.k%a;lastname@U-NACH+;emailF6'![])
+7 != 6
+
+Expected :6
+Actual   :7
+<Click to see difference>
+
+app = <fixture.application.Application object at 0x0000000E3D5D92E8>
+json_contacts = None:firstnameXaOun.k%a;lastname@U-NACH+;emailF6'![
+
+    def test_create_contact(app, json_contacts):
+        contact = json_contacts
+        old_contacts = app.contact.get_contact_list()
+        app.contact.create_new_contact(contact)
+        new_contacts = app.contact.get_contact_list()
+>       assert len(old_contacts) + 1 == len(new_contacts)
+E       assert 7 == 6
+
+test_add_contact.py:11: AssertionError
+FAILED [ 66%]
+test_add_contact.py:5 (test_create_contact[None:firstname}a0<;lastname!/\\RZa;emailW+^\\])
+7 != 6
+
+Expected :6
+Actual   :7
+<Click to see difference>
+
+app = <fixture.application.Application object at 0x0000000E3D5D92E8>
+json_contacts = None:firstname}a0<;lastname!/\RZa;emailW+^\
+
+    def test_create_contact(app, json_contacts):
+        contact = json_contacts
+        old_contacts = app.contact.get_contact_list()
+        app.contact.create_new_contact(contact)
+        new_contacts = app.contact.get_contact_list()
+>       assert len(old_contacts) + 1 == len(new_contacts)
+E       assert 7 == 6
+
+test_add_contact.py:11: AssertionError
+FAILED [ 83%]
+test_add_contact.py:5 (test_create_contact[None:firstnamec;lastnameQ-65Z gi;email&cOGZsW])
+7 != 6
+
+Expected :6
+Actual   :7
+<Click to see difference>
+
+app = <fixture.application.Application object at 0x0000000E3D5D92E8>
+json_contacts = None:firstnamec;lastnameQ-65Z gi;email&cOGZsW
+
+    def test_create_contact(app, json_contacts):
+        contact = json_contacts
+        old_contacts = app.contact.get_contact_list()
+        app.contact.create_new_contact(contact)
+        new_contacts = app.contact.get_contact_list()
+>       assert len(old_contacts) + 1 == len(new_contacts)
+E       assert 7 == 6
+
+test_add_contact.py:11: AssertionError
+FAILED [100%]
+test_add_contact.py:5 (test_create_contact[None:firstname>!ra;lastname" q CT]&;emailZ@,U \\])
+7 != 6
+
+Expected :6
+Actual   :7
+<Click to see difference>
+
+app = <fixture.application.Application object at 0x0000000E3D5D92E8>
+json_contacts = None:firstname>!ra;lastname" q CT]&;emailZ@,U \
+
+    def test_create_contact(app, json_contacts):
+        contact = json_contacts
+        old_contacts = app.contact.get_contact_list()
+        app.contact.create_new_contact(contact)
+        new_contacts = app.contact.get_contact_list()
+>       assert len(old_contacts) + 1 == len(new_contacts)
+E       assert 7 == 6
+
+test_add_contact.py:11: AssertionError
+
+
+
+
+
+
+Assertion failed

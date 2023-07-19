@@ -105,7 +105,7 @@ class Application:
     def open_home_page(self):
         wd = self.wd
         # open home page
-        wd.get("http://localhost/addressbook/")
+        wd.get(self.base_url)
 
     def destroy(self):
         self.wd.quit()
